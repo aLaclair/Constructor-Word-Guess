@@ -2,7 +2,7 @@ var Word = require('./Word')
 
 var inquirer = require('inquirer')
 
-const wordArr = ['horror', 'knife', 'murder', 'blood', 'demon']
+const wordArr = ['horror', 'knife', 'murder', 'blood', 'demon', 'ghost', 'ghoul', 'darkness', 'psycho', 'doll', 'haunt']
 
 let guessedLetters = []
 
@@ -19,7 +19,7 @@ let guessedLetters = []
     !function prompt() {
         
         console.log(gameWord.wordString()) // displays the word as either the character or an underscore
-        
+
         inquirer.prompt([
             
             {
@@ -30,15 +30,23 @@ let guessedLetters = []
         ]) .then(function(response) {
             let letter = response.guess.toLowerCase() // user input will be casted to lowercase to check against word
             let guess = response.guess.split('') // an array of all letters guessed to check for one character
+            let regex = RegExp(/^[a-zA-Z]+$/)
+
 
             if(guess.length > 1) { //if more than one character is input then run again, no guesses are used
                 console.log('One letter at a time please')
                 functional(response)
-            } else {
+            } else if (guess.length === 0) { // if enter is pressed, run prompt again
+                functional(response)
+            }
+            else if(!regex.test(letter)) {
+                console.log('Please enter a letter')
+                functional(response)
+            }
+            else {
                 if (gameWord.word.includes(letter)) { // if the letter is in the word, display correct and run prompt again
                     console.log('Correct!')
                     functional(response)
-                    // console.log(gameWord.display.join(''))
                 } 
                 else { // else guess is incorrect and one guess is subtracted
                     console.log('Incorrect!')
