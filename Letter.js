@@ -1,22 +1,16 @@
 function Letter(input) {
     this.input = input
-    this.alreadyGuessed = false
-    this.guessed = function() {
-        if (this.alreadyGuessed) {
-            console.log(input)
+    this.guessBool = false
+    this.ifGuessed = function() {
+        if (this.guessBool) {
             return input
         } else {
-            console.log('_')
-            return '_'
+            return '-'
         }
     }
-    this.correct = function() {
-        if (input === correct) {
-            console.log('Correct')
-            this.alreadyGuessed = true
-        }
-        else {
-            console.log('Incorrect')
+    this.guess = function(char) {
+        if (char.toLowerCase() === input) {
+            this.guessBool = true
         }
     }
 }
