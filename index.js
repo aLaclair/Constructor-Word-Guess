@@ -7,50 +7,66 @@ const wordArr = ['horror', 'knife', 'murder', 'blood', 'demon']
 let guessedLetters = []
 
 !function game() {
+
+    // setup and variable declaration
+
     console.log('------------------------------------')
     let guesses = 10
     let word = wordArr[Math.floor(Math.random() * wordArr.length)]
     let gameWord = new Word(word)
+
+    // inquirer prompt that will handle the game
     !function prompt() {
-        console.log(gameWord.wordString())
+        
+        console.log(gameWord.wordString()) // displays the word as either the character or an underscore
+        
         inquirer.prompt([
+            
             {
                 name: 'guess',
-                message: 'Guess a letter'
+                message: 'Guess a letter',
             }
+
         ]) .then(function(response) {
-            if (gameWord.word.includes(response.guess.toLowerCase())) {
-                console.log('Correct!')
-                if (gameWord.display.join('') !== word) {
-                    gameWord.guess(response.guess)
-                    gameWord.display.splice(0,gameWord.display.length)
-                    prompt()
-                } else {
-                    console.log('Great Job! Next Word!')
-                    guesses = 10
-                    game()
-                }
-                // console.log(gameWord.display.join(''))
+            let letter = response.guess.toLowerCase() // user input will be casted to lowercase to check against word
+            let guess = response.guess.split('') // an array of all letters guessed to check for one character
+
+            if(guess.length > 1) { //if more than one character is input then run again, no guesses are used
+                console.log('One letter at a time please')
+                functional(response)
             } else {
-                console.log('Incorrect!')
-                guesses--
-                console.log(`${guesses} guesses remaining`)
-                if (guesses > 0) {
-                    if (gameWord.display.join('') !== word) {
-                        gameWord.guess(response.guess)
-                        gameWord.display.splice(0,gameWord.display.length)
-                        prompt()
-                    } else {
-                        console.log('Great Job! Next Word!')
-                        guesses = 10
+                if (gameWord.word.includes(letter)) { // if the letter is in the word, display correct and run prompt again
+                    console.log('Correct!')
+                    functional(response)
+                    // console.log(gameWord.display.join(''))
+                } 
+                else { // else guess is incorrect and one guess is subtracted
+                    console.log('Incorrect!')
+                    guesses--
+                    console.log(`${guesses} guesses remaining`)
+                    if (guesses > 0) { 
+                        functional(response)
+                    } else { //if no guesses are remaining then clear the console and start the game again
+                        console.clear()
+                        console.log('You suck again')
                         game()
                     }
-                } else {
-                    console.log('You suck again')
-                    game()
                 }
+        }})
+
+        // function declaration for main game functionality
+        function functional(response) {
+            if (gameWord.display.join('') !== word) {
+                gameWord.guess(response.guess)
+                gameWord.display.splice(0,gameWord.display.length)
+                prompt()
+            } else {
+                console.clear()
+                console.log('Great Job! Next Word!')
+                guesses = 10
+                game()
             }
-        })
+        }
     }()
     
 }()
